@@ -1,7 +1,40 @@
 import React, { useState, useEffect } from 'react'
-import sampleURLData from '../sample-data.json'
+import sampleURLData from '../public/sample-data.json'
 import { ApiList } from '../components'
 import { isValidHttpUrl } from '../utils'
+import styled from 'styled-components'
+
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Input = styled.input`
+  width: 582px;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  border-radius: 24px;
+  height: 44px;
+  font-size: 16px;
+  background-color: transparent;
+  border-color: error ? red : #dfe1e5;
+  padding: 0 16px;
+
+  &:hover {
+    box-shadow: 0 1px 6px 0 rgba(32;33,36,0.28);
+    border-color: rgba(223,225,229,0);
+  }
+`
+
+const Button = styled.button`
+  height: 44px;
+  border-Radius: 24px;
+  border: 1px solid #dfe1e5;
+  font-s  ize: 16px;
+  padding: 0 16px;
+`
 
 import Layout from '../components/Layout'
 import { postRequest } from '../utils/request'
@@ -10,6 +43,7 @@ const IndexPage = () => {
   const [url, setUrl] = useState<string>('')
   const [items, setItems] = useState<any>([])
   const [error, setError] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
 
   // init data
@@ -29,6 +63,7 @@ const IndexPage = () => {
   }
 
   const onSubmit = () => {
+    setMessage('')
     setLoading(true)
     try {
       if (url.trim().includes(' ')) {
@@ -40,9 +75,10 @@ const IndexPage = () => {
       if (isValidHttpUrl(url.trim())) {
         postRequest('/invalidate', { url }).then((res: any) => {
           console.log({ res })
-          if (res.data.items && Array.isArray(res.data.items)) {
+          if (res.ok && res.data.items && Array.isArray(res.data.items)) {
             setItems(res.data.items)
             window.localStorage.setItem('items', JSON.stringify(res.data.items))
+            setMessage(`Invalidating for ${url} successfully!`)
           }
 
           setUrl('')
@@ -61,16 +97,8 @@ const IndexPage = () => {
   return (
     <Layout>
       <h1>Welcome 👋</h1>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <input
-          style={{
-            width: 200,
-            border: '1px solid grey',
-            borderColor: error ? 'red' : 'grey'
-          }}
+      <Container>
+        <Input
           placeholder={'Please enter url'}
           name='url'
           type='text'
@@ -79,16 +107,21 @@ const IndexPage = () => {
           disabled={loading}
         />
         &nbsp;&nbsp;
-        <button
+        <Button
           onClick={onSubmit}
           disabled={loading}
         >
           Clear cache
-        </button>
-      </div>
+        </Button>
+      </Container>
       {
         error && (
           <span style={{ color: 'red' }}>{error}</span>
+        )
+      }
+      {
+        message && (
+          <span style={{ color: 'green' }}>{message}</span>
         )
       }
       <br />

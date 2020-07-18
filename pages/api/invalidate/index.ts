@@ -3,7 +3,7 @@ import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { IURL } from '../../../interfaces'
 
-const filePath = path.join(process.cwd(), 'sample-data.json')
+const filePath = path.join(process.cwd(), 'public/sample-data.json')
 const SUCCESS = 1
 const NOT_FOUND = 0
 
