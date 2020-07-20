@@ -5,28 +5,28 @@ import {
   Container,
   Item,
 } from './style'
-import { unixTime } from '../../utils'
+// import { unixTime } from '../../utils'
 
 const Component = ({
-  url,
+  // url,
   ip,
-  lastUpdate
+  // lastUpdate
 }: IURL) => {
   return (
     <Container>
-      <Item>
+      {/* <Item>
         Domain: {url}
-      </Item>
+      </Item> */}
       <Item>
         Server IP: {ip}
       </Item>
-      {
+      {/* {
         lastUpdate && (
           <Item>
             Last update: {lastUpdate ? unixTime(lastUpdate) : ''}
           </Item>
         )
-      }
+      } */}
     </Container>
   )
 }

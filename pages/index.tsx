@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import sampleURLData from '../public/sample-data.json'
+import React, { useState } from 'react'
 import { ApiList } from '../components'
 import { isValidHttpUrl } from '../utils'
 import styled from 'styled-components'
@@ -46,18 +45,6 @@ const IndexPage = () => {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
 
-  // init data
-  useEffect(() => {
-    // store current data into localStorage
-    const storageItems = window.localStorage.getItem('items') || ''
-    if (storageItems) {
-      setItems(JSON.parse(storageItems))
-    } else {
-      window.localStorage.setItem('items', JSON.stringify(sampleURLData))
-      setItems(sampleURLData)
-    }
-  }, [])
-
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     setUrl(event.currentTarget.value.trim())
   }
@@ -73,17 +60,22 @@ const IndexPage = () => {
 
       // todo
       if (isValidHttpUrl(url.trim())) {
-        postRequest('/invalidate', { url }).then((res: any) => {
-          console.log({ res })
-          if (res.ok && res.data.items && Array.isArray(res.data.items)) {
-            setItems(res.data.items)
-            window.localStorage.setItem('items', JSON.stringify(res.data.items))
-            setMessage(`Invalidating for ${url} successfully!`)
-          }
-
-          setUrl('')
-          setError('')
-        })
+        postRequest('/invalidate', { url })
+          .then((res: any) => {
+            console.log({ res })
+            if (res.ok && res.data.items && Array.isArray(res.data.items)) {
+              setItems(res.data.items)
+              setMessage(`Invalidation successfully!`)
+              setUrl('')
+              setError('')
+            } else {
+              setError(res.error)
+            }
+          })
+          .catch((error: any) => {
+            console.log(error)
+            setError(error.message)
+          })
       } else {
         setError('Please enter a valid url')
       }

@@ -16,22 +16,29 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     // Demo purpose so that a sync flow would be accepted
     const rawData = await fs.readFileSync(filePath)
     let sampleURLData = JSON.parse(rawData.toString())
-    const indexUrl: number = sampleURLData.findIndex((item: IURL) => item.url === _req.body.url)
+    const requestedUrl: URL = new URL(_req.body.url)
+    const indexUrl: number = sampleURLData.findIndex((item: IURL) => item.url?.includes(requestedUrl.hostname))
 
     // Invalid url
     if (indexUrl < 0) {
-      throw new Error('Bad request')
+      return res.status(200).json({
+        ok: true,
+        data: NOT_FOUND,
+        error: 'Domain is not found!'
+      })
     }
 
     const status = SUCCESS
-    sampleURLData[indexUrl].lastUpdate = Math.floor(+new Date() / 1000)
-    await fs.writeFileSync(filePath, JSON.stringify(sampleURLData))
+    // sampleURLData[indexUrl].lastUpdate = Math.floor(+new Date() / 1000)
+    // await fs.writeFileSync(filePath, JSON.stringify(sampleURLData))
 
     res.status(200).json({
       ok: true,
       data: {
         status,
-        items: sampleURLData,
+        items: sampleURLData.map((item: IURL) => ({
+          ip: item.ip
+        })),
       }
     })
   } catch (err) {

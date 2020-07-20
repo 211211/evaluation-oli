@@ -4,7 +4,7 @@
 //
 
 export type IURL = {
-  url: string
+  url?: string
   ip: string
-  lastUpdate: number
+  // lastUpdate: number
 }

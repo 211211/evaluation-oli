@@ -12,7 +12,7 @@ export const postRequest = async (path: string, body?: any) => {
     )
 
     if (status !== 200) {
-        return
+        return data
     }
 
     return data
