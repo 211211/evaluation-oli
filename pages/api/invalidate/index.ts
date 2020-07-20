@@ -17,14 +17,15 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     const rawData = await fs.readFileSync(filePath)
     let sampleURLData = JSON.parse(rawData.toString())
     const requestedUrl: URL = new URL(_req.body.url)
-    const indexUrl: number = sampleURLData.findIndex((item: IURL) => item.url?.includes(requestedUrl.hostname))
+    // const indexUrl: number = sampleURLData.findIndex((item: IURL) => item.url?.includes(requestedUrl.hostname))
 
     // Invalid url
-    if (indexUrl < 0) {
+    // if (indexUrl < 0) {
+    if (!requestedUrl || !requestedUrl.hostname) {
       return res.status(200).json({
         ok: true,
         data: NOT_FOUND,
-        error: 'Domain is not found!'
+        error: 'Domain is invalid!'
       })
     }
 
