@@ -6,6 +6,8 @@ import {
   Item,
 } from './style'
 // import { unixTime } from '../../utils'
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const Component = ({
   // url,
@@ -14,9 +16,17 @@ const Component = ({
   // lastUpdate
 }: IURL) => {
   const imageSrc = status === 1
-    ? 'https://www.iconsdb.com/icons/preview/green/checkmark-xxl.png'
-    : 'https://www.iconsdb.com/icons/preview/soylent-red/error-6-xxl.png'
-  const alt = status === 1 ? 'Success Icon' : 'Failed Icon'
+    ? <FontAwesomeIcon icon={faCheckCircle} color={'green'} />
+    : <FontAwesomeIcon icon={faTimesCircle} color={'red'} />
+
+  // const SuccessIcon = () => {
+  //   return <FontAwesomeIcon icon={faCircle} />
+  // }
+
+  // const FailedIcon = () => {
+  //   return <FontAwesomeIcon icon={faTimesCircle} />
+  // }
+
   return (
     <Container>
       {/* <Item>
@@ -25,14 +35,7 @@ const Component = ({
       <Item>
         Server IP: {ip}
         &nbsp;
-        <img
-          style={{
-            width: 16,
-            height: 16
-          }}
-          src={imageSrc}
-          alt={alt}
-        />
+        {imageSrc}
       </Item>
       {/* {
         lastUpdate && (
