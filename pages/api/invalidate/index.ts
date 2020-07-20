@@ -38,7 +38,8 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       data: {
         status,
         items: sampleURLData.map((item: IURL) => ({
-          ip: item.ip
+          ip: item.ip,
+          status: [SUCCESS, NOT_FOUND][Math.floor(Math.random() * [SUCCESS, NOT_FOUND].length)]
         })),
       }
     })
