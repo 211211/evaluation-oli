@@ -30,3 +30,5 @@ export function unixTime(unixtime: number) {
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
 }
+
+export * from './generateCacheKeys'
