@@ -1,3 +1,24 @@
+export const MOBILE = 'mobile'
+export const DESKTOP = 'desktop'
+export const DEVICES = [MOBILE, DESKTOP]
+export const HAS_BOT_ACCESS = '1'
+export const NO_BOT_ACCESS = '0'
+export const BOT_OPTIONS = [NO_BOT_ACCESS, HAS_BOT_ACCESS]
+
+export const INSIDER = '0' // always is '0'
+export const HAS_PAGESPEED = '1' // always '1'
+export const ARGs = ''
+export const REMOTE_USER = '' // always is empty
+export const AUTH = ''
+export const SUFFIX = '/chaeleeth4sueHainae0eedeeMahmeiTh2oazeih-purge/'
+
+export const SERVER_IPs = [
+    '195.201.211.12',
+    '195.201.211.13',
+    '195.201.211.100',
+    '195.201.211.101',
+]
+
 export const SCITY = {
     'www.nrz.de': [
         'staedte.essen',
