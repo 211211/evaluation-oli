@@ -19,3 +19,5 @@ export function isValidHttpUrl(url: string) {
 }
 
 export * from './generateCacheKeysWithNodes'
+export * from './isMobile'
+export * from './request'

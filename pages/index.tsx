@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { ApiList } from '../components'
 import { isValidHttpUrl } from '../utils'
 import styled from 'styled-components'
 
@@ -35,11 +34,11 @@ const Button = styled.button`
 `
 
 import Layout from '../components/Layout'
-import { postRequest } from '../utils/request'
+import { isMobile, postRequest } from '../utils'
+import { MOBILE, DESKTOP } from '../config'
 
 const IndexPage = () => {
   const [url, setUrl] = useState<string>('')
-  const [items, setItems] = useState<any>([])
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -57,28 +56,39 @@ const IndexPage = () => {
         return
       }
 
-      // todo
+      
       if (isValidHttpUrl(url.trim())) {
-        postRequest('/invalidate', { url })
+        const headers = new Headers()
+        headers.append('ua_device', isMobile() ? MOBILE : DESKTOP)
+        headers.append("Host", url)
+
+        postRequest('/invalidate', { 
+          url,
+          headers
+        })
           .then((res: any) => {
             console.log({ res })
-            if (res.ok && res.data.items && Array.isArray(res.data.items)) {
-              setItems(res.data.items)
+            if (res.ok && Array.isArray(res.data) && res.data.length) {
+              console.log({data: res.data})
               setMessage(`Invalidation successfully!`)
               setUrl('')
               setError('')
             } else {
+              console.log('44444444444')
               setError(res.error)
             }
           })
           .catch((error: any) => {
+            console.log('11111111')
             console.log(error)
             setError(error.message)
           })
       } else {
+        console.log('22222222')
         setError('Please enter a valid url')
       }
     } catch (error) {
+      console.log('afdasdfsdafasdfasdfadsffa')
       setError(error)
     } finally {
       setLoading(false)
@@ -116,7 +126,6 @@ const IndexPage = () => {
         )
       }
       <br />
-      <ApiList items={items} />
     </Layout>
   )
 }

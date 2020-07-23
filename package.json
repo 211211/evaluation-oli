@@ -15,7 +15,6 @@
     "@types/axios": "^0.14.0",
     "@types/styled-components": "^5.1.1",
     "axios": "^0.19.2",
-    "moment": "^2.27.0",
     "next": "latest",
     "querystring": "^0.2.0",
     "react": "^16.12.0",
