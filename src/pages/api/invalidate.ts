@@ -45,25 +45,25 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         })
     }
 
-    // const requestOptions = {
-    //   method: 'PURGE',
-    //   headers: _req.body.headers
-    // }
+    const requestOptions = {
+      method: 'PURGE',
+      headers: _req.body.headers
+    }
 
-    // const promises = variations.map((url: string) => {
-    //   return new Promise((resolve, reject) => {
-    //     return fetch(url, requestOptions)
-    //       .then(response => resolve(response.text()))
-    //       .then(result => console.log(result))
-    //       .catch(error => {
-    //         log('error', error)
-    //         reject(error.message)
-    //       })
-    //   })
-    // })
+    const promises = variations.map((url: string) => {
+      return new Promise((resolve, reject) => {
+        return fetch(url, requestOptions)
+          .then(response => resolve(response.text()))
+          .then(result => console.log(result))
+          .catch(error => {
+            log('error', error)
+            reject(error.message)
+          })
+      })
+    })
 
     try {
-      // await Promise.all(promises)
+      await Promise.all(promises)
       return res.status(200).json({
         ok: true,
         data: {
