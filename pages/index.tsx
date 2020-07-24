@@ -20,7 +20,7 @@ const Input = styled.input`
   padding: 0 16px;
 
   &:hover {
-    box-shadow: 0 1px 6px 0 rgba(32;33,36,0.28);
+    box-shadow: 0 1px 6px 0 rgba(33,36,0.28);
     border-color: rgba(223,225,229,0);
   }
 `
@@ -29,19 +29,22 @@ const Button = styled.button`
   height: 44px;
   border-Radius: 24px;
   border: 1px solid #dfe1e5;
-  font-s  ize: 16px;
+  font-size: 16px;
   padding: 0 16px;
 `
 
 import Layout from '../components/Layout'
 import { isMobile, postRequest } from '../utils'
 import { MOBILE, DESKTOP } from '../config'
+import { LogEntry } from './api/invalidate'
+import { DebugList } from '../components/DebugList'
 
 const IndexPage = () => {
   const [url, setUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [logs, setLogs] = useState<LogEntry[]>([])
 
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     setUrl(event.currentTarget.value.trim())
@@ -68,6 +71,7 @@ const IndexPage = () => {
         })
           .then((res: any) => {
             console.log({ res })
+            setLogs(res.logs)
             if (res.ok && Array.isArray(res.data) && res.data.length) {
               console.log({data: res.data})
               setMessage(`Invalidation successfully!`)
@@ -97,7 +101,7 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      <h1>Welcome 👋</h1>
+      <h1>Welcome to the CDN Tool 👋</h1>
       <Container>
         <Input
           placeholder={'Please enter url'}
@@ -125,6 +129,7 @@ const IndexPage = () => {
           <span style={{ color: 'green' }}>{message}</span>
         )
       }
+      <DebugList items={logs} />
       <br />
     </Layout>
   )

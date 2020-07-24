@@ -1,6 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { generateCacheKeysWithNodes } from '../../../utils'
 
+export interface LogEntry {
+  type: string
+  message: string
+}
+
+const logs: LogEntry[] = [];
+
+const formatMessage = (message: any) => typeof message === 'string' ? message : JSON.stringify(message, null, 2)
+
+const log = (type: string, message: any) => {
+  logs.push({ type, message: formatMessage(message) });
+}
+
 // {
 //   ok: true | false,
 //   data: any
@@ -14,51 +27,58 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
     const requestedUrl: URL = new URL(_req.body.url)
     const variations = generateCacheKeysWithNodes(requestedUrl, _req.body.headers as Headers)
-    console.log({variations})
-    if (Array.isArray(variations) && variations.length) {
-      const requestOptions = {
-        method: 'PURGE',
-        headers: _req.body.headers
-      }
 
-      const promises = variations.map((url: string) => {
-        return new Promise((resolve, reject) => {
-          return fetch(url, requestOptions)
-            .then(response => resolve(response.text()))
-            .then(result => console.log(result))
-            .catch(error => {
-              console.log('error', error)
-              reject(error.message)
-            })
-        })
-      })
+    log('info', JSON.stringify({ variations }))
 
-      await Promise.all(promises)
-        .then(() => {
-          res.status(200).json({
-            ok: true,
-            data: variations
-          })
-        })
-        // we still return 200 because request reached our server
-        .catch((error) => {
-          res.status(200).json({
-            ok: true,
-            error
-          })
-        })
-    } else {
+    // Skip if no variations were created
+    if (!Array.isArray(variations) || !variations.length) {
       return res
         .status(200)
         .json({
           ok: true,
-          error: 'Domain is invalid!'
+          error: 'Invalid Domain!',
+          logs,
         })
     }
+
+    const requestOptions = {
+      method: 'PURGE',
+      headers: _req.body.headers
+    }
+
+    const promises = variations.map((url: string) => {
+      return new Promise((resolve, reject) => {
+        return fetch(url, requestOptions)
+          .then(response => resolve(response.text()))
+          .then(result => console.log(result))
+          .catch(error => {
+            log('error', error)
+            reject(error.message)
+          })
+      })
+    })
+
+    try {
+      await Promise.all(promises)
+      return res.status(200).json({
+        ok: true,
+        data: variations,
+        logs,
+      })
+
+    } catch (error) {
+      return res.status(200).json({
+        ok: true,
+        error,
+        logs,
+      })
+    }
+
   } catch (err) {
     res.status(400).json({
       ok: false,
-      error: err.message
+      error: err.message,
+      logs,
     })
   }
 }
