@@ -61,13 +61,9 @@ const IndexPage = () => {
 
       
       if (isValidHttpUrl(url.trim())) {
-        const headers = new Headers()
-        headers.append('ua_device', isMobile() ? MOBILE : DESKTOP)
-        headers.append("Host", url)
 
         postRequest('/invalidate', { 
           url,
-          headers
         })
           .then((res: any) => {
             console.log({ res })

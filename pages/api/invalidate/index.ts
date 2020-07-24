@@ -14,19 +14,33 @@ const log = (type: string, message: any) => {
   logs.push({ type, message: formatMessage(message) });
 }
 
+const makeRequestOptions = (url: string): RequestInit => {
+
+  const uri = new URL(url)
+
+  const headers = new Headers()
+  headers.append("Host", uri.host)
+
+  return {
+    method: 'PURGE',
+    headers,
+  }
+
+}
+
 // {
 //   ok: true | false,
 //   data: any
 //   error: string
 // }
-const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (_req.method !== 'POST') {
+    if (req.method !== 'POST') {
       throw new Error('Bad request')
     }
 
-    const requestedUrl: URL = new URL(_req.body.url)
-    const variations = generateCacheKeysWithNodes(requestedUrl, _req.body.headers as Headers)
+    const requestedUrl: URL = new URL(req.body.url)
+    const variations = generateCacheKeysWithNodes(requestedUrl, req.body.headers as Headers)
 
     log('info', JSON.stringify({ variations }))
 
@@ -41,13 +55,11 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         })
     }
 
-    const requestOptions = {
-      method: 'PURGE',
-      headers: _req.body.headers
-    }
+    const requestOptions = makeRequestOptions(req.body.url);
 
     const promises = variations.map((url: string) => {
       return new Promise((resolve, reject) => {
+
         return fetch(url, requestOptions)
           .then(response => resolve(response.text()))
           .then(result => console.log(result))
