@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { DebugList } from '@/components/DebugList'
+// import { DebugList } from '@/components/DebugList'
 import { Layout } from '@/components/Layout'
 import { ApiList } from '@/components/ApiList'
-import { isMobile, postRequest, isValidHttpUrl } from 'utils'
-import { MOBILE, DESKTOP } from 'config'
+import {
+  // isMobile,
+  postRequest,
+  isValidHttpUrl
+} from 'utils'
+// import { MOBILE, DESKTOP } from 'config'
 import { LogEntry } from 'interfaces'
 
 const Container = styled.div`
@@ -123,7 +127,7 @@ export const CdnTool = () => {
         )
       }
       <br />
-      <DebugList items={logs} />
+      {/* <DebugList items={logs} /> */}
       <br />
       <ApiList items={nodes} />
     </Layout>

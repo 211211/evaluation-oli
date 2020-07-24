@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { generateCacheKeysWithNodes } from '../../utils'
+import { generateCacheKeysWithNodes } from 'utils'
+import { NOT_FOUND, SUCCESS, SUFFIX } from 'config'
 
 export interface LogEntry {
   type: string
@@ -25,8 +26,9 @@ const makeRequestOptions = (url: string): RequestInit => {
     method: 'PURGE',
     headers,
   }
-
 }
+
+const getTitleRegex = /<title.*?>(.*?)<\/title>/g
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -54,10 +56,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const promises = variations.map((url: string) => {
       return new Promise((resolve, reject) => {
-
         return fetch(url, requestOptions)
-          .then(response => resolve(response.text()))
-          .then(result => console.log(result))
+          .then(response => response.text())
+          .then(html => resolve({
+            url,
+            html,
+          }))
           .catch(error => {
             log('error', error)
             reject(error.message)
@@ -66,10 +70,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     try {
-      await Promise.all(promises)
+      const responses = await Promise.all(promises)
+      let nodes: any = []
+      if (Array.isArray(responses)) {
+        nodes = responses.map(({ url, html }: any) => {
+          const sentUrl = new URL(url)
+          const matchedTitle = getTitleRegex.exec(html)
+          const isFailure: boolean = (!matchedTitle || !Array.isArray(matchedTitle) || matchedTitle[1] === '412 Precondition Failed')
+          return {
+            ip: sentUrl.host,
+            url: sentUrl.pathname,
+            status: isFailure ? NOT_FOUND : SUCCESS,
+            message: matchedTitle ? matchedTitle[1] : 'Unknown reason',
+            cachedKey: sentUrl.pathname.replace(SUFFIX, '')
+          }
+        })
+      }
+      // console.log({ responses })
       return res.status(200).json({
         ok: true,
-        data: variations,
+        data: {
+          nodes
+        },
         logs,
       })
 

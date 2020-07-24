@@ -16,9 +16,10 @@ export const Item = styled.div`
 `
 
 export const ApiItem = ({
-  // url,
+  url,
   ip,
   status,
+  cachedKey = '',
   // lastUpdate
 }: IURL) => {
   const imageSrc = status === 1
@@ -27,13 +28,17 @@ export const ApiItem = ({
 
   return (
     <Container>
-      {/* <Item>
-        Domain: {url}
-      </Item> */}
       <Item>
         Server IP: {ip}
-        &nbsp;
-        {imageSrc}
+      </Item>
+      <Item>
+        Path: {url}
+      </Item>
+      <Item>
+        Cached-key: {cachedKey}
+      </Item>
+      <Item>
+        Status: {imageSrc}
       </Item>
     </Container>
   )
