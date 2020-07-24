@@ -3,6 +3,8 @@ export const DESKTOP = 'desktop'
 export const DEVICES = [MOBILE, DESKTOP]
 export const HAS_BOT_ACCESS = '1'
 export const NO_BOT_ACCESS = '0'
+export const SUCCESS = 1
+export const NOT_FOUND = 0
 export const BOT_OPTIONS = [NO_BOT_ACCESS, HAS_BOT_ACCESS]
 
 export const INSIDER = '0' // always is '0'

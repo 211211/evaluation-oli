@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { generateCacheKeysWithNodes } from '../../../utils'
+import { generateCacheKeysWithNodes } from '../../utils'
 
 export interface LogEntry {
   type: string
@@ -28,11 +28,6 @@ const makeRequestOptions = (url: string): RequestInit => {
 
 }
 
-// {
-//   ok: true | false,
-//   data: any
-//   error: string
-// }
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     if (req.method !== 'POST') {

@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
-import { isValidHttpUrl } from '../utils'
 import styled from 'styled-components'
+import { DebugList } from '@/components/DebugList'
+import { Layout } from '@/components/Layout'
+import { ApiList } from '@/components/ApiList'
+import { isMobile, postRequest, isValidHttpUrl } from 'utils'
+import { MOBILE, DESKTOP } from 'config'
+import { LogEntry } from 'interfaces'
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +21,6 @@ const Input = styled.input`
   height: 44px;
   font-size: 16px;
   background-color: transparent;
-  border-color: error ? red : #dfe1e5;
   padding: 0 16px;
 
   &:hover {
@@ -33,14 +37,10 @@ const Button = styled.button`
   padding: 0 16px;
 `
 
-import Layout from '../components/Layout'
-import { isMobile, postRequest } from '../utils'
-import { MOBILE, DESKTOP } from '../config'
-import { LogEntry } from './api/invalidate'
-import { DebugList } from '../components/DebugList'
 
-const IndexPage = () => {
+export const CdnTool = () => {
   const [url, setUrl] = useState<string>('')
+  const [nodes, setNodes] = useState<any>([])
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -59,37 +59,31 @@ const IndexPage = () => {
         return
       }
 
-      
+
       if (isValidHttpUrl(url.trim())) {
 
-        postRequest('/invalidate', { 
+        postRequest('/invalidate', {
           url,
         })
           .then((res: any) => {
-            console.log({ res })
             setLogs(res.logs)
-            if (res.ok && Array.isArray(res.data) && res.data.length) {
-              console.log({data: res.data})
+            if (res.ok && res.data && Array.isArray(res.data.nodes) && res.data.nodes.length) {
+              setNodes(res.data.nodes)
               setMessage(`Invalidation successfully!`)
               setUrl('')
               setError('')
             } else {
-              console.log('44444444444')
               setError(res.error)
             }
           })
-          .catch((error: any) => {
-            console.log('11111111')
-            console.log(error)
-            setError(error.message)
+          .catch((caughtError: any) => {
+            setError(caughtError.message)
           })
       } else {
-        console.log('22222222')
         setError('Please enter a valid url')
       }
-    } catch (error) {
-      console.log('afdasdfsdafasdfasdfadsffa')
-      setError(error)
+    } catch (e) {
+      setError(e.message)
     } finally {
       setLoading(false)
     }
@@ -106,6 +100,9 @@ const IndexPage = () => {
           value={url}
           onChange={onChange}
           disabled={loading}
+          style={{
+            borderColor: error ? 'red' : '#dfe1e5'
+          }}
         />
         &nbsp;&nbsp;
         <Button
@@ -125,10 +122,10 @@ const IndexPage = () => {
           <span style={{ color: 'green' }}>{message}</span>
         )
       }
+      <br />
       <DebugList items={logs} />
       <br />
+      <ApiList items={nodes} />
     </Layout>
   )
 }
-
-export default IndexPage

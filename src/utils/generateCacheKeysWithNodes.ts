@@ -1,5 +1,5 @@
 // 'https://195.201.211.101/chaeleeth4sueHainae0eedeeMahmeiTh2oazeih-purge/h=www.thueringer-allgemeine.de,u=/sport/,a=,d=mobile,i=0,p=1,s=https,ru=,ba=0/'
-// $cacheKey = 'h=$host,u=$uri,a=$args,d=$ua_device,i=$insider,p=$has_pagespeed,s=$thescheme;ru=$remote_user,ba=$botaccess'; 
+// $cacheKey = 'h=$host,u=$uri,a=$args,d=$ua_device,i=$insider,p=$has_pagespeed,s=$thescheme;ru=$remote_user,ba=$botaccess';
 // $host = host of the URL
 // $u = URL-path
 // $args = empty
@@ -8,12 +8,12 @@
 // $p = always '1'
 // $s = always 'https'
 // $ru = empty
-// $ba = ['0', '1'] (both variations)   
+// $ba = ['0', '1'] (both variations)
 // $sc = empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
 // $auth = empty
 
 import {
-    SERVER_IPs, 
+    SERVER_IPs,
     INSIDER,
     HAS_PAGESPEED,
     ARGs,
@@ -26,7 +26,7 @@ import {
     // HAS_BOT_ACCESS,
     // NO_BOT_ACCESS,
     BOT_OPTIONS,
-} from '../config'
+} from 'config'
 
 type UA_DEVICE = 'mobile' | 'desktop'
 type BOT_ACCESS = '0' | '1'
