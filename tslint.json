@@ -19,16 +19,6 @@
         "no-submodule-imports": false,
         "object-literal-sort-keys": false,
         "variable-name": false,
-        "no-console": {
-            "severity": "warning",
-            "options": [
-                "debug",
-                "info",
-                "log",
-                "time",
-                "timeEnd",
-                "trace"
-            ]
-        }
+        "no-console": false
     }
 }

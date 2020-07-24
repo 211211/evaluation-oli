@@ -16,6 +16,8 @@
     "@types/axios": "^0.14.0",
     "@types/styled-components": "^5.1.1",
     "axios": "^0.19.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "next": "latest",
     "querystring": "^0.2.0",
     "react": "^16.12.0",
@@ -36,5 +38,23 @@
     "ts-jest": "^26.1.3",
     "typescript": "3.7.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.+(ts|tsx)": [
+      "prettier --write",
+      "git add",
+      "jest --findRelatedTests",
+      "npm run lint"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "none",
+    "printWidth": 120
+  }
 }
