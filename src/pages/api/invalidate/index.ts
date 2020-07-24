@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { generateCacheKeysWithNodes } from '../../../utils'
-
-export interface LogEntry {
-  type: string
-  message: string
-}
+import { generateCacheKeysWithNodes } from 'utils'
+import { LogEntry } from 'interfaces'
 
 const logs: LogEntry[] = [];
 

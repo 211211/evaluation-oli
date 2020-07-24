@@ -26,7 +26,7 @@ import {
     // HAS_BOT_ACCESS,
     // NO_BOT_ACCESS,
     BOT_OPTIONS,
-} from '../config'
+} from 'config'
 
 type UA_DEVICE = 'mobile' | 'desktop'
 type BOT_ACCESS = '0' | '1'

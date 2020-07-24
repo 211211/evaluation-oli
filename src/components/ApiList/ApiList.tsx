@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { ApiItem } from '../../components'
-import { IURL } from '../../interfaces'
+import { ApiItem } from 'components'
+import { IURL } from 'interfaces'
 
 type Props = {
   items: IURL[]

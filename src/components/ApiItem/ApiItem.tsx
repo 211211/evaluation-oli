@@ -1,6 +1,5 @@
 import React from 'react'
-
-import { IURL } from '../../interfaces'
+import { IURL } from 'interfaces'
 import {
   Container,
   Item,

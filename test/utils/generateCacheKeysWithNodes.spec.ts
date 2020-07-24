@@ -1,4 +1,4 @@
-import { generateCacheKeysWithNodes } from '../../utils'
+import { generateCacheKeysWithNodes } from 'src/utils'
 
 test('Should return all valid variations for https://www.thueringer-allgemeine.de', () => {
     const fullUrl: URL = new URL('https://www.thueringer-allgemeine.de')

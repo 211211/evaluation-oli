@@ -1,45 +1,15 @@
 import React, { useState } from 'react'
-import { isValidHttpUrl } from '../utils'
-import styled from 'styled-components'
+import {
+  Container,
+  Input,
+  Button,
+} from './style'
+import { Layout, DebugList } from 'components'
+import { isMobile, postRequest, isValidHttpUrl } from 'utils'
+import { MOBILE, DESKTOP } from 'config'
+import { LogEntry } from 'interfaces'
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const Input = styled.input`
-  width: 582px;
-  border: 1px solid #dfe1e5;
-  box-shadow: none;
-  border-radius: 24px;
-  height: 44px;
-  font-size: 16px;
-  background-color: transparent;
-  border-color: error ? red : #dfe1e5;
-  padding: 0 16px;
-
-  &:hover {
-    box-shadow: 0 1px 6px 0 rgba(33,36,0.28);
-    border-color: rgba(223,225,229,0);
-  }
-`
-
-const Button = styled.button`
-  height: 44px;
-  border-Radius: 24px;
-  border: 1px solid #dfe1e5;
-  font-size: 16px;
-  padding: 0 16px;
-`
-
-import Layout from '../components/Layout'
-import { isMobile, postRequest } from '../utils'
-import { MOBILE, DESKTOP } from '../config'
-import { LogEntry } from './api/invalidate'
-import { DebugList } from '../components/DebugList'
-
-const IndexPage = () => {
+const Home = () => {
   const [url, setUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')
@@ -59,41 +29,34 @@ const IndexPage = () => {
         return
       }
 
-      
+
       if (isValidHttpUrl(url.trim())) {
         const headers = new Headers()
         headers.append('ua_device', isMobile() ? MOBILE : DESKTOP)
         headers.append("Host", url)
 
-        postRequest('/invalidate', { 
+        postRequest('/invalidate', {
           url,
           headers
         })
           .then((res: any) => {
-            console.log({ res })
             setLogs(res.logs)
             if (res.ok && Array.isArray(res.data) && res.data.length) {
-              console.log({data: res.data})
               setMessage(`Invalidation successfully!`)
               setUrl('')
               setError('')
             } else {
-              console.log('44444444444')
               setError(res.error)
             }
           })
-          .catch((error: any) => {
-            console.log('11111111')
-            console.log(error)
-            setError(error.message)
+          .catch((caughtError: any) => {
+            setError(caughtError.message)
           })
       } else {
-        console.log('22222222')
         setError('Please enter a valid url')
       }
-    } catch (error) {
-      console.log('afdasdfsdafasdfasdfadsffa')
-      setError(error)
+    } catch (e) {
+      setError(e.message)
     } finally {
       setLoading(false)
     }
@@ -135,4 +98,4 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export default Home

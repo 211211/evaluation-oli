@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+// tslint:disable-next-line: no-submodule-imports
 import Head from 'next/head'
 
 type Props = {
