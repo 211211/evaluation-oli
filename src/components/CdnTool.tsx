@@ -37,7 +37,7 @@ const Button = styled.button`
 `
 
 
-export const Home = () => {
+export const CdnTool = () => {
   const [url, setUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')

@@ -1,8 +1,8 @@
 import React from 'react'
-import { Home } from '@/components/Home'
+import { CdnTool } from '@/components/CdnTool'
 
 const Index = () => {
-  return <Home />
+  return <CdnTool />
 }
 
 export default Index

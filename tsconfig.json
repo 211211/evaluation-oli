@@ -21,9 +21,9 @@
     "baseUrl": "src",
     "paths": {
       "@/components/*": ["components/*"],
-      "@/config/*": ["config/index.ts"],
-      "@/interfaces/*": ["interfaces/index.ts"],
-      "@/utils/*": ["utils/index.ts"],
+      "config/*": ["config/index.ts"],
+      "interfaces/*": ["interfaces/index.ts"],
+      "utils/*": ["utils/index.ts"]
     }
   },
   "exclude": ["node_modules"],
