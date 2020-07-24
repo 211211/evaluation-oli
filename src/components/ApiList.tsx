@@ -7,6 +7,7 @@ type Props = {
 }
 
 export const ApiList = ({ items }: Props) => {
+  console.log({items})
   return (
     <>
       {items.map((item: IURL) => (

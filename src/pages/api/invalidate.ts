@@ -1,7 +1,11 @@
+import path from 'path'
+import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { generateCacheKeysWithNodes } from 'utils'
-import { LogEntry } from 'interfaces'
+import { IURL, LogEntry } from 'interfaces'
+import { SUCCESS, NOT_FOUND } from 'config'
 
+const filePath = path.join(process.cwd(), 'public/sample-data.json')
 const logs: LogEntry[] = [];
 
 const formatMessage = (message: any) => typeof message === 'string' ? message : JSON.stringify(message, null, 2)
@@ -9,6 +13,8 @@ const formatMessage = (message: any) => typeof message === 'string' ? message : 
 const log = (type: string, message: any) => {
   logs.push({ type, message: formatMessage(message) });
 }
+
+const randomizeStatus = (): number => [SUCCESS, NOT_FOUND][Math.floor(Math.random() * [SUCCESS, NOT_FOUND].length)]
 
 // {
 //   ok: true | false,
@@ -21,6 +27,8 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       throw new Error('Bad request')
     }
 
+    const rawData = await fs.readFileSync(filePath)
+    const sampleURLData = JSON.parse(rawData.toString())
     const requestedUrl: URL = new URL(_req.body.url)
     const variations = generateCacheKeysWithNodes(requestedUrl, _req.body.headers as Headers)
 
@@ -37,28 +45,34 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         })
     }
 
-    const requestOptions = {
-      method: 'PURGE',
-      headers: _req.body.headers
-    }
+    // const requestOptions = {
+    //   method: 'PURGE',
+    //   headers: _req.body.headers
+    // }
 
-    const promises = variations.map((url: string) => {
-      return new Promise((resolve, reject) => {
-        return fetch(url, requestOptions)
-          .then(response => resolve(response.text()))
-          .then(result => console.log(result))
-          .catch(error => {
-            log('error', error)
-            reject(error.message)
-          })
-      })
-    })
+    // const promises = variations.map((url: string) => {
+    //   return new Promise((resolve, reject) => {
+    //     return fetch(url, requestOptions)
+    //       .then(response => resolve(response.text()))
+    //       .then(result => console.log(result))
+    //       .catch(error => {
+    //         log('error', error)
+    //         reject(error.message)
+    //       })
+    //   })
+    // })
 
     try {
-      await Promise.all(promises)
+      // await Promise.all(promises)
       return res.status(200).json({
         ok: true,
-        data: variations,
+        data: {
+          variations,
+          nodes: sampleURLData.map((item: IURL) => ({
+            ip: item.ip,
+            status: randomizeStatus()
+          })),
+        },
         logs,
       })
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { DebugList } from '@/components/DebugList'
 import { Layout } from '@/components/Layout'
+import { ApiList } from '@/components/ApiList'
 import { isMobile, postRequest, isValidHttpUrl } from 'utils'
 import { MOBILE, DESKTOP } from 'config'
 import { LogEntry } from 'interfaces'
@@ -39,6 +40,7 @@ const Button = styled.button`
 
 export const CdnTool = () => {
   const [url, setUrl] = useState<string>('')
+  const [nodes, setNodes] = useState<any>([])
   const [error, setError] = useState<string>('')
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -69,7 +71,8 @@ export const CdnTool = () => {
         })
           .then((res: any) => {
             setLogs(res.logs)
-            if (res.ok && Array.isArray(res.data) && res.data.length) {
+            if (res.ok && res.data && Array.isArray(res.data.nodes) && res.data.nodes.length) {
+              setNodes(res.data.nodes)
               setMessage(`Invalidation successfully!`)
               setUrl('')
               setError('')
@@ -123,8 +126,10 @@ export const CdnTool = () => {
           <span style={{ color: 'green' }}>{message}</span>
         )
       }
+      <br />
       <DebugList items={logs} />
       <br />
+      <ApiList items={nodes} />
     </Layout>
   )
 }
