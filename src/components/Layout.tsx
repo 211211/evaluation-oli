@@ -7,7 +7,7 @@ type Props = {
   title?: string
 }
 
-const Layout = ({ children, title = 'Evaluation - Invalidating url' }: Props) => (
+export const Layout = ({ children, title = 'Evaluation - Invalidating url' }: Props) => (
   <div>
     <Head>
       <title>{title}</title>
@@ -27,5 +27,3 @@ const Layout = ({ children, title = 'Evaluation - Invalidating url' }: Props) =>
     </div>
   </div>
 )
-
-export default Layout

@@ -20,10 +20,10 @@
     "target": "esnext",
     "baseUrl": "src",
     "paths": {
-      "components": ["components/index.ts"],
-      "config": ["config/index.ts"],
-      "interfaces": ["interfaces/index.ts"],
-      "utils": ["utils/index.ts"],
+      "@/components/*": ["components/*"],
+      "@/config/*": ["config/index.ts"],
+      "@/interfaces/*": ["interfaces/index.ts"],
+      "@/utils/*": ["utils/index.ts"],
     }
   },
   "exclude": ["node_modules"],

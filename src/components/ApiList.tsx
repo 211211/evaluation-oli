@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { ApiItem } from 'components'
+import { ApiItem } from '@/components/ApiItem'
 import { IURL } from 'interfaces'
 
 type Props = {
   items: IURL[]
 }
 
-const ApiList = ({ items }: Props) => {
+export const ApiList = ({ items }: Props) => {
   return (
     <>
       {items.map((item: IURL) => (
@@ -18,5 +18,3 @@ const ApiList = ({ items }: Props) => {
     </>
   )
 }
-
-export default ApiList
