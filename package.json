@@ -46,15 +46,9 @@
   },
   "lint-staged": {
     "*.+(ts|tsx)": [
-      "prettier --write",
       "git add",
       "jest --findRelatedTests",
       "npm run lint"
     ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "none",
-    "printWidth": 120
   }
 }

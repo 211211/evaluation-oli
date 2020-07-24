@@ -20,7 +20,6 @@ const Input = styled.input`
   height: 44px;
   font-size: 16px;
   background-color: transparent;
-  border-color: error ? red : #dfe1e5;
   padding: 0 16px;
 
   &:hover {
@@ -102,6 +101,9 @@ export const Home = () => {
           value={url}
           onChange={onChange}
           disabled={loading}
+          style={{
+            borderColor: error ? 'red' : '#dfe1e5'
+          }}
         />
         &nbsp;&nbsp;
         <Button

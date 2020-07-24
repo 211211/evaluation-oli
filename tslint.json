@@ -4,7 +4,6 @@
         "tslint:latest",
         "tslint-react",
         "tslint-eslint-rules",
-        "tslint-config-prettier",
         "tslint-react-hooks"
     ],
     "rules": {
