@@ -1,26 +1,25 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { generateCacheKeysWithNodes } from 'utils'
-import { NOT_FOUND, SUCCESS, SUFFIX } from 'config'
+import {InvalidationStatus, SUFFIX} from '@/config'
+import {generateCacheKeysWithNodes} from '@/utils'
+import {NextApiRequest, NextApiResponse} from 'next'
 
 export interface LogEntry {
   type: string
   message: string
 }
 
-const logs: LogEntry[] = [];
+const logs: LogEntry[] = []
 
-const formatMessage = (message: any) => typeof message === 'string' ? message : JSON.stringify(message, null, 2)
+const formatMessage = (message: any) => (typeof message === 'string' ? message : JSON.stringify(message, null, 2))
 
 const log = (type: string, message: any) => {
-  logs.push({ type, message: formatMessage(message) });
+  logs.push({type, message: formatMessage(message)})
 }
 
 const makeRequestOptions = (url: string): RequestInit => {
-
   const uri = new URL(url)
 
   const headers = new Headers()
-  headers.append("Host", uri.host)
+  headers.append('Host', uri.host)
 
   return {
     method: 'PURGE',
@@ -28,7 +27,27 @@ const makeRequestOptions = (url: string): RequestInit => {
   }
 }
 
-const getTitleRegex = /<title.*?>(.*?)<\/title>/g
+const getResponseStatusString = (html: string): string | null => {
+  const matched = /<title.*?>(.*?)<\/title>/g.exec(html)
+  let statusString = ''
+
+  if (Array.isArray(matched) && matched.length > 0) {
+    statusString = matched[1]
+  }
+
+  return statusString
+}
+
+const getResponseStatus = (statusString: string): string | null => {
+  switch (statusString) {
+    case 'Successful purge':
+      return InvalidationStatus.Success
+    case '412 Precondition Failed':
+      return InvalidationStatus.NotFound
+    default:
+      return InvalidationStatus.Error
+  }
+}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -39,50 +58,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const requestedUrl: URL = new URL(req.body.url)
     const variations = generateCacheKeysWithNodes(requestedUrl, req.body.headers as Headers)
 
-    log('info', JSON.stringify({ variations }))
+    log('info', {variations})
 
     // Skip if no variations were created
     if (!Array.isArray(variations) || !variations.length) {
-      return res
-        .status(200)
-        .json({
-          ok: true,
-          error: 'Invalid Domain!',
-          logs,
-        })
+      return res.status(200).json({
+        ok: true,
+        error: 'Invalid Domain!',
+        logs,
+      })
     }
 
-    const requestOptions = makeRequestOptions(req.body.url);
+    const requestOptions = makeRequestOptions(req.body.url)
 
-    const promises = variations.map((url: string) => {
-      return new Promise((resolve, reject) => {
-        return fetch(url, requestOptions)
-          .then(response => response.text())
-          .then(html => resolve({
-            url,
-            html,
-          }))
-          .catch(error => {
-            log('error', error)
-            reject(error.message)
-          })
-      })
+    const promises = variations.map(async (url: string) => {
+      try {
+        const response = await fetch(url, requestOptions)
+        const html = await response.text()
+        return {url, html}
+      } catch (e) {
+        log('error', e)
+        throw e
+      }
     })
 
     try {
       const responses = await Promise.all(promises)
       let nodes: any = []
       if (Array.isArray(responses)) {
-        nodes = responses.map(({ url, html }: any) => {
+        nodes = responses.map(({url, html}: any) => {
           const sentUrl = new URL(url)
-          const matchedTitle = getTitleRegex.exec(html)
-          const isFailure: boolean = (!matchedTitle || !Array.isArray(matchedTitle) || matchedTitle[1] === '412 Precondition Failed')
+          console.log(html)
+          const message = getResponseStatusString(html)
+
           return {
+            message,
             ip: sentUrl.host,
             url: sentUrl.pathname,
-            status: isFailure ? NOT_FOUND : SUCCESS,
-            message: matchedTitle ? matchedTitle[1] : 'Unknown reason',
-            cachedKey: sentUrl.pathname.replace(SUFFIX, '')
+            status: getResponseStatus(message || ''),
+            cachedKey: sentUrl.pathname.replace(SUFFIX, ''),
           }
         })
       }
@@ -90,11 +104,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json({
         ok: true,
         data: {
-          nodes
+          nodes,
         },
         logs,
       })
-
     } catch (error) {
       return res.status(200).json({
         ok: true,
@@ -102,7 +115,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         logs,
       })
     }
-
   } catch (err) {
     res.status(400).json({
       ok: false,

@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "prettier": "prettier src --write",
-    "type-check": "tsc",
+    "type-check": "tsc --noEmit",
     "test": "jest",
     "lint": "tslint -c tslint.json 'src/**/*.ts*'",
     "test:all": "yarn lint && yarn type-check && yarn test"
@@ -45,13 +45,12 @@
   "license": "MIT",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn type-check && lint-staged"
     }
   },
   "lint-staged": {
     "*.+(ts|tsx)": [
       "yarn prettier",
-      "tsc --noEmit",
       "tslint -c tslint.json --fix",
       "jest --findRelatedTests"
     ]

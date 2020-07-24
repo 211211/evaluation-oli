@@ -1,8 +1,21 @@
+import {CdnTool} from '@/components/CdnTool'
 import React from 'react'
-import { CdnTool } from '@/components/CdnTool'
+import {createGlobalStyle} from 'styled-components'
+import {normalize} from 'styled-normalize'
 
-const Index = () => {
-  return <CdnTool />
-}
+export const GlobalStyle = createGlobalStyle`
+  ${normalize}
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0 1rem;
+  }
+`
+
+const Index = () => (
+  <>
+    <GlobalStyle />
+    <CdnTool />
+  </>
+)
 
 export default Index

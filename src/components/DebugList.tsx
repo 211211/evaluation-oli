@@ -1,19 +1,45 @@
-import React from 'react'
-import { LogEntry } from 'interfaces'
+import {LogEntry} from '@/interfaces'
+import React, {MouseEvent, useState} from 'react'
+import styled from 'styled-components'
 
 export interface DebugListProps {
-    items: LogEntry[]
+  items: LogEntry[]
 }
 
-export const DebugList: React.FC<DebugListProps> = ({ items }) => {
+const StyledMessage = styled.code`
+  white-space: pre-wrap;
+  font-size: 12px;
+`
 
-    if (!items || !items.length) {
-        return null;
-    }
+export const DebugList: React.FC<DebugListProps> = ({items}) => {
+  const [show, setShow] = useState(false)
 
-    return (
+  if (!items || !items.length) {
+    return null
+  }
+
+  const handleClick = (event: MouseEvent) => {
+    event.preventDefault()
+    setShow(!show)
+  }
+
+  return (
+    <div>
+      <a href='' onClick={handleClick}>
+        Debug Log
+      </a>
+      {show && (
         <ul>
-            {items.map(({ type, message }) => <li key={type}>{type}: <code>{message}</code></li>)}
+          {items.map(({type, message}) => (
+            <li key={type}>
+              <StyledMessage>
+                <strong>{type}:</strong>
+              </StyledMessage>{' '}
+              <StyledMessage>{message}</StyledMessage>
+            </li>
+          ))}
         </ul>
-    )
+      )}
+    </div>
+  )
 }
