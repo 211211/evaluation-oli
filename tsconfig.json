@@ -18,12 +18,9 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "baseUrl": "src",
+    "baseUrl": "./",
     "paths": {
-      "@/components/*": ["components/*"],
-      "config/*": ["config/index.ts"],
-      "interfaces/*": ["interfaces/index.ts"],
-      "utils/*": ["utils/index.ts"]
+      "@/*": ["src/*"],
     }
   },
   "exclude": ["node_modules"],
