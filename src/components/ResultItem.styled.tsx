@@ -5,12 +5,15 @@ export const StyledResultItem = styled.div`
   margin: 0.5rem 0;
   padding-top: 8px;
   padding-bottom: 8px;
+
+  align-items: center;
+  justify-content: center;
+  display: flex;
 `
 export const StyledRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: space-between;
 `
 
 export const StyledDetailsRow = styled(StyledRow)`

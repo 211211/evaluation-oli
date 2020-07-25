@@ -1,5 +1,5 @@
-import { InvalidationStatus, SUFFIX } from '@/config'
-import { Node } from '@/interfaces'
+import {InvalidationStatus, SUFFIX} from '@/config'
+import {Node} from '@/interfaces'
 
 export const makeRequestOptions = (url: string): RequestInit => {
   const uri = new URL(url)
@@ -51,7 +51,6 @@ export const transferInvalidationResult = (responses: TransferInvalidationResult
   const nodes = responses.map(
     ({url, html}: any): Node => {
       const sentUrl = new URL(url)
-      console.log(html)
       const message = getResponseStatusString(html)
 
       return {
