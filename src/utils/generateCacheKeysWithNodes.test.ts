@@ -1,6 +1,6 @@
 import {generateCacheKeysWithNodes} from './generateCacheKeysWithNodes'
 
-test('Should return all valid variations for https://www.thueringer-allgemeine.de', () => {
+test('Should return all valid variations for https://www.thueringer-allgemeine.de for Desktop and Mobile', () => {
   const fullUrl: URL = new URL('https://www.thueringer-allgemeine.de')
   const variations = generateCacheKeysWithNodes(fullUrl)
 

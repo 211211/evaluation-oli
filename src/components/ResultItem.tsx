@@ -35,7 +35,7 @@ export const ResultItem: React.FC<ResultItemProps> = ({url, ip, status, message,
         <StyledItem>
           <StyledIcon>{statusIcon}</StyledIcon> Server: {ip}
         </StyledItem>
-        <StyledItem>{status}</StyledItem>
+        &nbsp;<StyledItem>{status}</StyledItem>
       </StyledRow>
       {expanded && (
         <StyledDetailsRow>

@@ -1,8 +1,8 @@
 import {DebugList} from '@/components/DebugList'
 import {Layout} from '@/components/Layout'
 import {ResultList} from '@/components/ResultList'
-import {LogEntry} from '@/interfaces'
-import {isValidHttpUrl, postRequest} from '@/utils'
+import {Invalidate, LogEntry} from '@/interfaces'
+import {isValidHttpsUrl, postRequest} from '@/utils'
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import {InputBar} from './InputBar'
@@ -14,38 +14,42 @@ const StyledHeading = styled.h1`
 
 export const CdnTool = () => {
   const [nodes, setNodes] = useState<any>([])
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState<string | undefined>('')
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [logs, setLogs] = useState<LogEntry[]>([])
 
-  const onSubmit = (url: string) => {
+  const onSubmit = async (url: string) => {
     setMessage('')
     setLoading(true)
+
     try {
       if (url.trim().includes(' ')) {
         setError('Please remove white space in your url!')
         return
       }
 
-      if (isValidHttpUrl(url.trim())) {
-        postRequest('/invalidate', {url})
-          .then((res: any) => {
-            setLogs(res.logs)
-            if (res.ok && res.data && Array.isArray(res.data.nodes) && res.data.nodes.length) {
-              setNodes(res.data.nodes)
-              setMessage(`Invalidation successful`)
-              setError('')
-            } else {
-              setError(res.error)
-            }
-          })
-          .catch((caughtError: any) => {
-            setError(caughtError.message)
-          })
-      } else {
-        setError('Please enter a valid url')
+      if (!isValidHttpsUrl(url.trim())) {
+        setError('Please enter a valid https request')
+        return
       }
+
+      const {
+        ok = false,
+        data = [],
+        error: responsedError = 'Unknown error',
+        logs: responsedLogs = [],
+      }: Invalidate = await postRequest('/invalidate', {url})
+      setLogs(responsedLogs)
+      if (!ok) {
+        setError(responsedError)
+        return
+      }
+
+      // show node list
+      setNodes(data)
+      setMessage(`Invalidation successful`)
+      setError('')
     } catch (e) {
       setError(e.message)
     } finally {

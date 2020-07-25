@@ -1,11 +1,7 @@
 import {InvalidationStatus, SUFFIX} from '@/config'
+import {LogEntry} from '@/interfaces'
 import {generateCacheKeysWithNodes} from '@/utils'
 import {NextApiRequest, NextApiResponse} from 'next'
-
-export interface LogEntry {
-  type: string
-  message: string
-}
 
 const logs: LogEntry[] = []
 
@@ -100,12 +96,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
         })
       }
-      // console.log({ responses })
+
       return res.status(200).json({
         ok: true,
-        data: {
-          nodes,
-        },
+        data: nodes,
         logs,
       })
     } catch (error) {
