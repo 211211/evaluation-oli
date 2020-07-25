@@ -1,6 +1,16 @@
 import Head from 'next/head'
 import React, {ReactNode} from 'react'
-import {LayoutContainer} from './Layout.styled'
+import styled from 'styled-components'
+
+export const LayoutContainer = styled.div`
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  max-width: 960px;
+`
 
 interface LayoutProps {
   children?: ReactNode

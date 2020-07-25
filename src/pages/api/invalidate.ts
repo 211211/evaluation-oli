@@ -1,6 +1,5 @@
-import {InvalidationStatus, SUFFIX} from '@/config'
 import {LogEntry} from '@/interfaces'
-import {generateCacheKeysWithNodes} from '@/utils'
+import {generateCacheKeysWithNodes, makeRequestOptions, transferInvalidationResult} from '@/utils'
 import {NextApiRequest, NextApiResponse} from 'next'
 
 const logs: LogEntry[] = []
@@ -11,48 +10,17 @@ const log = (type: string, message: any) => {
   logs.push({type, message: formatMessage(message)})
 }
 
-const makeRequestOptions = (url: string): RequestInit => {
-  const uri = new URL(url)
-
-  const headers = new Headers()
-  headers.append('Host', uri.host)
-
-  return {
-    method: 'PURGE',
-    headers,
-  }
-}
-
-const getResponseStatusString = (html: string): string | null => {
-  const matched = /<title.*?>(.*?)<\/title>/g.exec(html)
-  let statusString = ''
-
-  if (Array.isArray(matched) && matched.length > 0) {
-    statusString = matched[1]
-  }
-
-  return statusString
-}
-
-const getResponseStatus = (statusString: string): string | null => {
-  switch (statusString) {
-    case 'Successful purge':
-      return InvalidationStatus.Success
-    case '412 Precondition Failed':
-      return InvalidationStatus.NotFound
-    default:
-      return InvalidationStatus.Error
-  }
-}
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     if (req.method !== 'POST') {
       throw new Error('Bad request')
     }
 
+    // create a URL instance from requested url
     const requestedUrl: URL = new URL(req.body.url)
-    const variations = generateCacheKeysWithNodes(requestedUrl, req.body.headers as Headers)
+
+    // generate all available cached-keys for given url
+    const variations = generateCacheKeysWithNodes(requestedUrl)
 
     log('info', {variations})
 
@@ -65,8 +33,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
     }
 
+    // prepare headers
     const requestOptions = makeRequestOptions(req.body.url)
 
+    // execute all variations and map 1vs1 the result to the sent request
     const promises = variations.map(async (url: string) => {
       try {
         const response = await fetch(url, requestOptions)
@@ -78,37 +48,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     })
 
-    try {
-      const responses = await Promise.all(promises)
-      let nodes: any = []
-      if (Array.isArray(responses)) {
-        nodes = responses.map(({url, html}: any) => {
-          const sentUrl = new URL(url)
-          console.log(html)
-          const message = getResponseStatusString(html)
+    // parsed html result
+    const invalidationResult = transferInvalidationResult(await Promise.all(promises))
 
-          return {
-            message,
-            ip: sentUrl.host,
-            url: sentUrl.pathname,
-            status: getResponseStatus(message || ''),
-            cachedKey: sentUrl.pathname.replace(SUFFIX, ''),
-          }
-        })
-      }
-
-      return res.status(200).json({
-        ok: true,
-        data: nodes,
-        logs,
-      })
-    } catch (error) {
-      return res.status(200).json({
-        ok: true,
-        error,
-        logs,
-      })
-    }
+    return res.status(200).json({
+      ok: true,
+      data: invalidationResult,
+      logs,
+    })
   } catch (err) {
     res.status(400).json({
       ok: false,

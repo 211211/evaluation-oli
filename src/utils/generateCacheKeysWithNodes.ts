@@ -12,28 +12,13 @@
 // $sc = empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
 // $auth = empty
 
-import {
-  ARGs,
-  AUTH,
-  BOT_OPTIONS,
-  DEVICES,
-  HAS_PAGESPEED,
-  INSIDER,
-  REMOTE_USER,
-  // MOBILE,
-  // DESKTOP,
-  SERVER_IPs,
-  // HAS_BOT_ACCESS,
-  // NO_BOT_ACCESS,
-  SUFFIX,
-} from '@/config'
+import {ARGs, AUTH, BOT_OPTIONS, DEVICES, HAS_PAGESPEED, INSIDER, REMOTE_USER, SERVER_IPs, SUFFIX} from '@/config'
 
 type UA_DEVICE = 'mobile' | 'desktop'
 type BOT_ACCESS = '0' | '1'
 type SCHEME = 'https'
 
-export const generateCacheKeysWithNodes = (url: URL, headers?: Headers): string[] => {
-  console.log({headers})
+export const generateCacheKeysWithNodes = (url: URL): string[] => {
   const {host, pathname, protocol = 'https:'} = url
 
   const $host = host

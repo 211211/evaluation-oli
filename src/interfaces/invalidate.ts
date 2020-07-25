@@ -4,7 +4,7 @@ export interface Node {
   message: string
   ip: string
   url: string
-  status: number
+  status: string
   cachedKey: string
 }
 
