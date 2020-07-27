@@ -12,24 +12,43 @@
 // $sc = empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
 // $auth = empty
 
-import {args, auth, botOptions, devices, hasPageSpeed, insider, remoteUser, serverIPs, suffix} from '@/config'
+import {args, auth, botOptions, devices, hasPageSpeed, insider, remoteUser, sCity, serverIPs, suffix} from '@/config'
 
 type DEVICE = 'mobile' | 'desktop'
 type BOT_ACCESS = '0' | '1'
+type CITY = {
+  [key: string]: string[]
+}
 
 export const generateCacheKeysWithNodes = (url: URL): string[] => {
   const {host, pathname, protocol = 'https:'} = url
   const uri = pathname
   const scheme = protocol.substr(0, protocol.length - 1) // always 'https'
-  const sCity = '' // empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
-
   const cachedKeys: string[] = []
+
+  const _sCity: CITY = sCity
+  let cities: string[]
+  const isSpecialDomain = Array.isArray(_sCity[host]) && _sCity[host].length > 0
+  if (isSpecialDomain) {
+    cities = _sCity[host] || []
+  }
+
   devices.forEach((device: string) => {
     const uaDevice: DEVICE = device as DEVICE
     botOptions.forEach((botOption: string) => {
       const botAccess: BOT_ACCESS = botOption as BOT_ACCESS // ['0', '1'] (both variations)
-      const cachedKey: string = `h=${host},u=${uri},a=${args},d=${uaDevice},i=${insider},p=${hasPageSpeed},s=${scheme},ru=${remoteUser},ba=${botAccess},sc=${sCity},auth=${auth}`
-      cachedKeys.push(cachedKey)
+      let cachedKey = ''
+      if (isSpecialDomain) {
+        cities.forEach((city: string) => {
+          cachedKey = `h=${host},u=${uri},a=${args},d=${uaDevice},i=${insider},p=${hasPageSpeed},s=${scheme},ru=${remoteUser},ba=${botAccess},sc=${
+            city || ''
+          },auth=${auth}`
+          cachedKeys.push(cachedKey)
+        })
+      } else {
+        cachedKey = `h=${host},u=${uri},a=${args},d=${uaDevice},i=${insider},p=${hasPageSpeed},s=${scheme},ru=${remoteUser},ba=${botAccess},sc=,auth=${auth}`
+        cachedKeys.push(cachedKey)
+      }
     })
   })
 
