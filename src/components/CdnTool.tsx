@@ -37,12 +37,12 @@ export const CdnTool = () => {
       const {
         ok = false,
         data = [],
-        error: responsedError = 'Unknown error',
-        logs: responsedLogs = [],
+        error: responseError = 'Unknown error',
+        logs: responseLogs = [],
       }: Invalidate = await postRequest('/invalidate', {url})
-      setLogs(responsedLogs)
+      setLogs(responseLogs)
       if (!ok) {
-        setError(responsedError)
+        setError(responseError)
         return
       }
 
