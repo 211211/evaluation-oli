@@ -12,33 +12,31 @@
 // $sc = empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
 // $auth = empty
 
-import {ARGs, AUTH, BOT_OPTIONS, DEVICES, HAS_PAGESPEED, INSIDER, REMOTE_USER, SERVER_IPs, SUFFIX} from '@/config'
+import {args, auth, botOptions, devices, hasPageSpeed, insider, remoteUser, serverIPs, suffix} from '@/config'
 
-type UA_DEVICE_TYPE = 'mobile' | 'desktop'
-type BOT_ACCESS_TYPE = '0' | '1'
+type DEVICE = 'mobile' | 'desktop'
+type BOT_ACCESS = '0' | '1'
 
 export const generateCacheKeysWithNodes = (url: URL): string[] => {
   const {host, pathname, protocol = 'https:'} = url
-
-  const HOST = host
-  const URI = pathname
-  const SCHEME = protocol.substr(0, protocol.length - 1) // always 'https'
-  const SCITY = '' // empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
+  const uri = pathname
+  const scheme = protocol.substr(0, protocol.length - 1) // always 'https'
+  const sCity = '' // empty or an array of keys. if domain is listed in $city (see below) create all variations for all values
 
   const cachedKeys: string[] = []
-  DEVICES.forEach((device: string) => {
-    const UA_DEVICE: UA_DEVICE_TYPE = device as UA_DEVICE_TYPE
-    BOT_OPTIONS.forEach((botOption: string) => {
-      const BOT_ACCESS: BOT_ACCESS_TYPE = botOption as BOT_ACCESS_TYPE // ['0', '1'] (both variations)
-      const cachedKey: string = `h=${HOST},u=${URI},a=${ARGs},d=${UA_DEVICE},i=${INSIDER},p=${HAS_PAGESPEED},s=${SCHEME},ru=${REMOTE_USER},ba=${BOT_ACCESS},sc=${SCITY},auth=${AUTH}`
+  devices.forEach((device: string) => {
+    const uaDevice: DEVICE = device as DEVICE
+    botOptions.forEach((botOption: string) => {
+      const botAccess: BOT_ACCESS = botOption as BOT_ACCESS // ['0', '1'] (both variations)
+      const cachedKey: string = `h=${host},u=${uri},a=${args},d=${uaDevice},i=${insider},p=${hasPageSpeed},s=${scheme},ru=${remoteUser},ba=${botAccess},sc=${sCity},auth=${auth}`
       cachedKeys.push(cachedKey)
     })
   })
 
   const variations: string[] = []
-  SERVER_IPs.forEach((ip: string) => {
+  serverIPs.forEach((ip: string) => {
     cachedKeys.forEach((cachedKey: string) => {
-      variations.push(`${SCHEME}://${ip}${SUFFIX}${cachedKey}`)
+      variations.push(`${scheme}://${ip}${suffix}${cachedKey}`)
     })
   })
 

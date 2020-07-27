@@ -1,4 +1,4 @@
-import {InvalidationStatus, SUFFIX} from '@/config'
+import {InvalidationStatus, suffix} from '@/config'
 import {Node} from '@/interfaces'
 
 export const makeRequestOptions = (url: string): RequestInit => {
@@ -58,7 +58,7 @@ export const transferInvalidationResult = (responses: TransferInvalidationResult
         ip: sentUrl.host,
         url: sentUrl.pathname,
         status: getResponseStatus(message),
-        cachedKey: sentUrl.pathname.replace(SUFFIX, ''),
+        cachedKey: sentUrl.pathname.replace(suffix, ''),
       }
     },
   )

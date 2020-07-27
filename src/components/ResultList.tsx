@@ -1,5 +1,5 @@
 import {ResultItem, ResultItemProps} from '@/components/ResultItem'
-import * as React from 'react'
+import React from 'react'
 import {StyledResultList} from './ResultList.styled'
 
 interface ApiListProps {

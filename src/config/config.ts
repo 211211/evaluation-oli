@@ -1,16 +1,16 @@
-export const MOBILE = 'mobile'
-export const DESKTOP = 'desktop'
-export const DEVICES = [MOBILE, DESKTOP]
-export const HAS_BOT_ACCESS = '1'
-export const NO_BOT_ACCESS = '0'
-export const BOT_OPTIONS = [NO_BOT_ACCESS, HAS_BOT_ACCESS]
+export const mobile = 'mobile'
+export const desktop = 'desktop'
+export const devices = [mobile, desktop]
+export const hasBotAccess = '1'
+export const noBotAccess = '0'
+export const botOptions = [noBotAccess, hasBotAccess]
 
-export const INSIDER = '0' // always is '0'
-export const HAS_PAGESPEED = '1' // always '1'
-export const ARGs = ''
-export const REMOTE_USER = '' // always is empty
-export const AUTH = ''
-export const SUFFIX = '/chaeleeth4sueHainae0eedeeMahmeiTh2oazeih-purge/'
+export const insider = '0' // always is '0'
+export const hasPageSpeed = '1' // always '1'
+export const args = ''
+export const remoteUser = '' // always is empty
+export const auth = ''
+export const suffix = '/chaeleeth4sueHainae0eedeeMahmeiTh2oazeih-purge/'
 
 export enum InvalidationStatus {
   Success = 'success',
@@ -18,9 +18,9 @@ export enum InvalidationStatus {
   Error = 'error',
 }
 
-export const SERVER_IPs = ['195.201.211.12', '195.201.211.13', '195.201.211.100', '195.201.211.101']
+export const serverIPs = ['195.201.211.12', '195.201.211.13', '195.201.211.100', '195.201.211.101']
 
-export const SCITY = {
+export const sCity = {
   'www.nrz.de': [
     'staedte.essen',
     'staedte.duisburg',
